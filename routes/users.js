@@ -1,9 +1,15 @@
+const auth = require('../middleware/auth');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const {User, validate} = require('../models/user');
 const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
+
+router.get('/me', auth, async (req, res) => {
+    const user = await User.findById(req.user._id).select('-password');
+    res.send(user);
+});
 
 router.post('/', async (req, res) => {
     const { error } = validate(req.body); 
@@ -28,7 +34,10 @@ router.post('/', async (req, res) => {
     
     await user.save();
     
-    res.send(_.pick(user, ['_id', 'name', 'email'])); // we don't need to send the password back to the user
+    // if the case is we need to log the user in after registration => we use its token in header
+    const token = user.generateAuthToken();
+    res.header('x-auth-token', token) // token to header. 'x-' before custom headers 
+        .send(_.pick(user, ['_id', 'name', 'email'])); // we don't need to send the password back to the user
 });
 
 module.exports = router;
