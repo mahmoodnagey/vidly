@@ -3,6 +3,10 @@ require('express-async-errors');
 
 module.exports = function () {
     
+    // winston.handleExceptions(
+    //     new winston.transports.File
+    // )
+    
     // Handling unhandled / uncaght exceptions
     // process.on('uncaughtException', (ex) => {
     //     console.log('WE GOT AN UNCAGHT EXCEPTION');
