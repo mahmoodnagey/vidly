@@ -2,15 +2,14 @@ const request = require('supertest');
 const {Genre} = require('../../models/genre');
 const {User} = require('../../models/user');
 
-let server;
-
 describe('/api/genres', () => {
+    let server;
     
     beforeEach(() => {server = require('../../index');});
     afterEach(async () => { 
         
         //Close the server to prevent errors as we will run server again each test on the same port
-        server.close();
+        await server.close();
         
         //Each test should remove the objects we have inserted
         await Genre.deleteMany();   
